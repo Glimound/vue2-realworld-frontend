@@ -17,7 +17,7 @@
     props: {
       paginationNum: {
         type: Number,
-        require: true
+        required: true
       }
     },
     data() {

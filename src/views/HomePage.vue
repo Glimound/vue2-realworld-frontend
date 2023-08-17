@@ -45,7 +45,6 @@
   import ThePagination from '@/components/ThePagination'
   import FeedToggle from '@/components/FeedToggle'
   import { mapState } from 'vuex'
-  import store from '@/store'
 
   export default {
     name: 'HomePage',
@@ -58,13 +57,12 @@
       ...mapState(['globalArticles']),
       paginationNum() {
         //todo: 将此处的10解耦
-        return Math.floor(store.state.articlesCount / 10)
+        return Math.floor(this.$store.state.articlesCount / 10)
       }
     },
     beforeMount() {
-      store.dispatch('getGlobalArticles', 0)
+      this.$store.dispatch('getGlobalArticles', 0)
     }
-  
   }
 </script>
 

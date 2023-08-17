@@ -5,6 +5,7 @@ import LoginPage from '@/views/LoginPage'
 import RegisterPage from '@/views/RegisterPage'
 import EditorPage from '@/views/EditorPage'
 import SettingsPage from '@/views/SettingsPage'
+import ArticlePage from '@/views/ArticlePage'
 
 Vue.use(VueRouter)
 
@@ -33,6 +34,11 @@ const routes = [
     name: 'settingsPage',
     path: '/settings',
     component: SettingsPage
+  },
+  {
+    name: 'articlePage',
+    path: '/article/:slug',
+    component: ArticlePage
   }
 ]
 

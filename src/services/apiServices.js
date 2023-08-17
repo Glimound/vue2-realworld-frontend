@@ -44,5 +44,14 @@ export const ArticlesService = {
       limit: 10,
       offset: offset
     })
+  },
+  getArticle(slug) {
+    return ApiService.get(`/articles/${slug}`)
+  }
+}
+
+export const CommentsService = {
+  getComments(slug) {
+    return ApiService.get(`/articles/${slug}/comments`)
   }
 }
