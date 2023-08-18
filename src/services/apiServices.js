@@ -45,6 +45,13 @@ export const ArticlesService = {
       offset: offset
     })
   },
+  getTaggedArticles(offset, tag) {
+    return ApiService.query('/articles', {
+      limit: 10,
+      offset: offset,
+      tag: tag
+    })
+  },
   getArticle(slug) {
     return ApiService.get(`/articles/${slug}`)
   }
@@ -53,5 +60,11 @@ export const ArticlesService = {
 export const CommentsService = {
   getComments(slug) {
     return ApiService.get(`/articles/${slug}/comments`)
+  }
+}
+
+export const TagsService = {
+  getPopularTags() {
+    return ApiService.get('/tags')
   }
 }

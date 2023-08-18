@@ -20,20 +20,8 @@
         </div>
 
         <div class="col-md-3">
-          <div class="sidebar">
-            <p>Popular Tags</p>
-
-            <div class="tag-list">
-              <a href="" class="tag-pill tag-default">programming</a>
-              <a href="" class="tag-pill tag-default">javascript</a>
-              <a href="" class="tag-pill tag-default">emberjs</a>
-              <a href="" class="tag-pill tag-default">angularjs</a>
-              <a href="" class="tag-pill tag-default">react</a>
-              <a href="" class="tag-pill tag-default">mean</a>
-              <a href="" class="tag-pill tag-default">node</a>
-              <a href="" class="tag-pill tag-default">rails</a>
-            </div>
-          </div>
+          <tag-list/>
+          
         </div>
       </div>
     </div>
@@ -44,6 +32,7 @@
   import ArticlePreview from '@/components/ArticlePreview'
   import ThePagination from '@/components/ThePagination'
   import FeedToggle from '@/components/FeedToggle'
+  import TagList from '@/components/TagList'
   import { mapState } from 'vuex'
 
   export default {
@@ -51,13 +40,14 @@
     components: {
       ArticlePreview,
       ThePagination,
-      FeedToggle
+      FeedToggle,
+      TagList
     },
     computed:{
       ...mapState(['globalArticles']),
       paginationNum() {
         //todo: 将此处的10解耦
-        return Math.floor(this.$store.state.articlesCount / 10)
+        return Math.ceil((this.$store.state.articlesCount -1) / 10)
       }
     },
     beforeMount() {

@@ -38,6 +38,7 @@
       ...mapState(['article'])
     },
     beforeMount() {
+      // todo：存在bug，后退时store中的article结构消失
       this.$store.dispatch('getArticle', this.$route.params.slug)
     },
     destroyed() {

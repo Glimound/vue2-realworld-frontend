@@ -1,5 +1,5 @@
 <template>
-  <ul class="pagination">
+  <ul v-if="paginationNum > 1" class="pagination">
     <li 
       v-for="n in paginationNum"
       :key="n"
@@ -12,6 +12,7 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
   export default {
     name: 'ThePagination',
     props: {
@@ -20,15 +21,20 @@
         required: true
       }
     },
-    data() {
-      return {
-        currentPagination: 1
-      }
+    computed: {
+      ...mapState(['currentTag', 'currentPagination'])
     },
     methods: {
       changePageTo(num) {
-        this.$store.dispatch('getGlobalArticles', num*10)
-        this.currentPagination = num
+        if (!this.currentTag)
+          this.$store.dispatch('getGlobalArticles', (num - 1) * 10)
+        else
+          this.$store.dispatch('getGlobalArticlesByTag', {
+            offset: (num - 1) * 10,
+            tag: this.currentTag
+          })
+        // todo: tag间切换时vuex的数据未清空
+        this.$store.commit('setCurrentPagination', num)
       },
       pageItemClass(n) {
         return {
