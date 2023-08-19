@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { getJwtToken } from '@/services/jwtServices'
-import { ArticlesService, CommentsService, TagsService } from '@/services/apiServices'
+import { deleteJwtToken, getJwtToken, saveJwtToken } from '@/services/jwtServices'
+import { ArticlesService, AuthenticationService, CommentsService, TagsService } from '@/services/apiServices'
 
 Vue.use(Vuex)
 
@@ -18,7 +18,9 @@ export default new Vuex.Store({
     comments: [],
     popularTags: [],
     currentTag: '',
-    currentPagination: 1
+    currentPagination: 1,
+    errorMessages: {},
+    currentUser: {}
   },
   getters: {
   },
@@ -44,12 +46,26 @@ export default new Vuex.Store({
     setCurrentPagination(state, num) {
       state.currentPagination = num
     },
+    setErrorMessages(state, obj) {
+      state.errorMessages = obj
+    },
+    setCurrentUser(state, obj) {
+      state.currentUser = obj
+    },
+    setAuthentication(state, str) {
+      saveJwtToken(str)
+      state.isAuthenticated = true
+    },
     clearCurrentTag(state) {
       state.currentTag = ''
     },
     clearGlobalArticles(state) {
       state.globalArticles = [],
       state.articlesCount = 0
+    },
+    clearAuthentication(state) {
+      deleteJwtToken()
+      state.isAuthenticated = false
     },
     resetCurrentPagination(state) {
       state.currentPagination = 1
@@ -81,6 +97,17 @@ export default new Vuex.Store({
     getPopularTags(context) {
       TagsService.getPopularTags().then(({data}) => {
         context.commit('setPopularTags', data.tags)
+      })
+    },
+    login(context, credential) {
+      return new Promise((resolve) => {
+        AuthenticationService.login(credential).then(({data}) => {
+          context.commit('setCurrentUser', data.user)
+          context.commit('setAuthentication', data.user.token)
+          resolve()
+        }).catch(({response}) => {
+          context.commit('setErrorMessages', response.data.errors)
+        })
       })
     }
   },

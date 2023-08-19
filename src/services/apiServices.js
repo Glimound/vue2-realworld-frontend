@@ -30,8 +30,8 @@ export const ApiService = {
   post(resource, data) {
     return axiosClient.post(resource, data)
   },
-  put(resource) {
-    return axiosClient.put(resource)
+  put(resource, data) {
+    return axiosClient.put(resource, data)
   },
   delete(resource, data) {
     return axiosClient.delete(resource, data)
@@ -66,5 +66,26 @@ export const CommentsService = {
 export const TagsService = {
   getPopularTags() {
     return ApiService.get('/tags')
+  }
+}
+
+export const AuthenticationService = {
+  login(credential) {
+    return ApiService.post('/users/login', {
+      user: credential
+    })
+  },
+  register(info) {
+    return ApiService.post('/users', {
+      user: info
+    })
+  },
+  getCurrentUser() {
+    return ApiService.get('/user')
+  },
+  updateCurrentUser(info) {
+    return ApiService.put('/user', {
+      user: info
+    })
   }
 }

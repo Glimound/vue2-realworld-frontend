@@ -38,7 +38,7 @@
             </fieldset>
           </form>
           <hr />
-          <button class="btn btn-outline-danger">Or click here to logout.</button>
+          <button @click="logout" class="btn btn-outline-danger">Or click here to logout.</button>
         </div>
       </div>
     </div>
@@ -47,7 +47,13 @@
 
 <script>
   export default {
-    name: 'SettingsPage'
+    name: 'SettingsPage',
+    methods: {
+      logout() {
+        this.$store.commit('clearAuthentication')
+        this.$router.push({ name: 'homePage' })
+      }
+    }
   }
 </script>
 

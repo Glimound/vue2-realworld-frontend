@@ -8,18 +8,20 @@
             <router-link to="/register">Need an account?</router-link>
           </p>
 
-          <ul class="error-messages">
-            <li>That email is already taken</li>
+          <ul  class="error-messages">
+            <li v-for="(value, name, index) in errorMessages" :key="index">
+              <span v-for="(msg, index) in value" :key="index">{{name}} {{msg}}</span>
+            </li>
           </ul>
 
           <form>
             <fieldset class="form-group">
-              <input class="form-control form-control-lg" type="text" placeholder="Email" />
+              <input v-model="email" class="form-control form-control-lg" type="email" placeholder="Email" />
             </fieldset>
             <fieldset class="form-group">
-              <input class="form-control form-control-lg" type="password" placeholder="Password" />
+              <input v-model="password" class="form-control form-control-lg" type="password" placeholder="Password" />
             </fieldset>
-            <button class="btn btn-lg btn-primary pull-xs-right">Sign in</button>
+            <button @click.prevent="login" class="btn btn-lg btn-primary pull-xs-right">Sign in</button>
           </form>
         </div>
       </div>
@@ -28,8 +30,29 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
   export default {
-    name: 'LoginPage'
+    name: 'LoginPage',
+    data() {
+      return {
+        email: "",
+        password: ""
+      }
+    },
+    computed: {
+      ...mapState(['errorMessages', 'currentUser'])
+    },
+    methods: {
+      login() {
+        this.$store.dispatch('login', {
+          'email': this.email,
+          'password': this.password
+        }).then(() => {
+          this.$router.replace({ name: 'homePage' })
+        })
+        
+      }
+    }
   }
 </script>
 

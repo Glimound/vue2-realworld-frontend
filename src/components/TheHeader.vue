@@ -5,7 +5,7 @@
       <!-- 用户未通过鉴权的情况 -->
       <ul v-if="!isAuthencated" class="nav navbar-nav pull-xs-right">
         <li class="nav-item">
-          <router-link class="nav-link" active-class="active" to="/">Home</router-link>
+          <router-link class="nav-link" exact-active-class="active" to="/">Home</router-link>
         </li>
         <li class="nav-item">
           <router-link class="nav-link" active-class="active" to="/login">Sign in</router-link>
@@ -28,7 +28,7 @@
         <li class="nav-item">
           <router-link class="nav-link" active-class="active" to="/profile/eric-simons">
             <img src="" class="user-pic" />
-            Eric Simons
+            {{currentUser.username}}
           </router-link>
         </li>
       </ul>
@@ -37,9 +37,11 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
   export default {
     name: 'TheHeader',
     computed: {
+      ...mapState(['currentUser']),
       isAuthencated() {
         return this.$store.state.isAuthenticated
       }
