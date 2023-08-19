@@ -8,21 +8,23 @@
             <router-link to="/login">Have an account?</router-link>
           </p>
 
-          <ul class="error-messages">
-            <li>That email is already taken</li>
+          <ul  class="error-messages">
+            <li v-for="(value, name, index) in errorMessages" :key="index">
+              <span v-for="(msg, index) in value" :key="index">{{name}} {{msg}}</span>
+            </li>
           </ul>
 
           <form>
             <fieldset class="form-group">
-              <input class="form-control form-control-lg" type="text" placeholder="Username" />
+              <input v-model="username" class="form-control form-control-lg" type="text" placeholder="Username" />
             </fieldset>
             <fieldset class="form-group">
-              <input class="form-control form-control-lg" type="text" placeholder="Email" />
+              <input v-model="email" class="form-control form-control-lg" type="email" placeholder="Email" />
             </fieldset>
             <fieldset class="form-group">
-              <input class="form-control form-control-lg" type="password" placeholder="Password" />
+              <input v-model="password" class="form-control form-control-lg" type="password" placeholder="Password" />
             </fieldset>
-            <button class="btn btn-lg btn-primary pull-xs-right">Sign up</button>
+            <button @click.prevent="register" class="btn btn-lg btn-primary pull-xs-right">Sign up</button>
           </form>
         </div>
       </div>
@@ -31,8 +33,33 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
   export default {
-    name: 'RegisterPage'
+    name: 'RegisterPage',
+    data() {
+      return {
+        username: '',
+        email: '',
+        password: ''
+      }
+    },
+    computed: {
+      ...mapState(['errorMessages'])
+    },
+    methods: {
+      register() {
+        this.$store.dispatch('register', {
+          'username': this.username,
+          'email': this.email,
+          'password': this.password
+        }).then(() => {
+          this.$router.replace({ name: 'homePage' })
+        })
+      },
+      destroyed() {
+        this.$store.commit('clearErrorMessages')
+      }
+    }
   }
 </script>
 

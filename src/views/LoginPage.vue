@@ -35,8 +35,8 @@
     name: 'LoginPage',
     data() {
       return {
-        email: "",
-        password: ""
+        email: '',
+        password: ''
       }
     },
     computed: {

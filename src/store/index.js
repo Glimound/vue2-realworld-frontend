@@ -115,6 +115,17 @@ export default new Vuex.Store({
           context.commit('setErrorMessages', response.data.errors)
         })
       })
+    },
+    register(context, info) {
+      return new Promise((resolve) => {
+        AuthenticationService.register(info).then(({data}) => {
+          context.commit('setCurrentUser', data.user)
+          context.commit('setAuthentication', data.user.token)
+          resolve()
+        }).catch(({response}) => {
+          context.commit('setErrorMessages', response.data.errors)
+        })
+      })
     }
   },
   modules: {
