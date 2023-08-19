@@ -50,8 +50,10 @@
         }).then(() => {
           this.$router.replace({ name: 'homePage' })
         })
-        
       }
+    },
+    destroyed() {
+      this.$store.commit('clearErrorMessages')
     }
   }
 </script>

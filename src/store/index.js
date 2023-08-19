@@ -67,6 +67,12 @@ export default new Vuex.Store({
       deleteJwtToken()
       state.isAuthenticated = false
     },
+    clearErrorMessages(state) {
+      state.errorMessages = {}
+    },
+    clearPopularTags(state) {
+      state.popularTags = []
+    },
     resetCurrentPagination(state) {
       state.currentPagination = 1
     }

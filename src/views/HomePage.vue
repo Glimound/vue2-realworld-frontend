@@ -52,6 +52,12 @@
     },
     beforeMount() {
       this.$store.dispatch('getGlobalArticles', 0)
+    },
+    destroyed() {
+      this.$store.commit('clearCurrentTag')
+      this.$store.commit('clearPopularTags')
+      this.$store.commit('clearGlobalArticles')
+      this.$store.commit('resetCurrentPagination')
     }
   }
 </script>
