@@ -6,6 +6,7 @@ import RegisterPage from '@/views/RegisterPage'
 import EditorPage from '@/views/EditorPage'
 import SettingsPage from '@/views/SettingsPage'
 import ArticlePage from '@/views/ArticlePage'
+import store from '@/store'
 
 Vue.use(VueRouter)
 
@@ -47,4 +48,14 @@ const router = new VueRouter({
   routes
 })
 
+router.beforeEach((to, from, next) => {
+  // 若用户通过验证，但并无当前user信息（刷新/地址访问），则获取user信息
+  if (store.state.isAuthenticated && Object.keys(store.state.currentUser).length === 0) {
+    store.dispatch('getCurrentUser').then(() => {
+      next()
+    })
+  } else {
+    next()
+  }
+})
 export default router

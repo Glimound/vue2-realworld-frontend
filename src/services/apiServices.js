@@ -12,7 +12,7 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use((config) => {
   if (store.state.isAuthenticated)
-    config.headers.Authorization = getJwtToken()
+    config.headers.Authorization = `Token ${getJwtToken()}`
   return config
 }, (error) => {
   return Promise.reject(error)
@@ -33,8 +33,8 @@ export const ApiService = {
   put(resource, data) {
     return axiosClient.put(resource, data)
   },
-  delete(resource, data) {
-    return axiosClient.delete(resource, data)
+  delete(resource) {
+    return axiosClient.delete(resource)
   }
 }
 
@@ -60,6 +60,14 @@ export const ArticlesService = {
 export const CommentsService = {
   getComments(slug) {
     return ApiService.get(`/articles/${slug}/comments`)
+  },
+  postComment(slug, comment) {
+    return ApiService.post(`/articles/${slug}/comments`, {
+      comment: comment
+    })
+  },
+  deleteComment(slug, id) {
+    return ApiService.delete(`/articles/${slug}/comments/${id}`)
   }
 }
 

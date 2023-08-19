@@ -27,7 +27,7 @@
         </li>
         <li class="nav-item">
           <router-link class="nav-link" active-class="active" to="/profile/eric-simons">
-            <img src="" class="user-pic" />
+            <img :src="currentUser.image" class="user-pic" />
             {{currentUser.username}}
           </router-link>
         </li>

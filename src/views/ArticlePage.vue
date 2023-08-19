@@ -16,7 +16,7 @@
         <article-meta :article="article" :action="true"/>
       </div>
 
-      <article-comment/>
+      <article-comment :slug="article.slug"/>
     </div>
   </div>
 </template>
@@ -25,7 +25,9 @@
   import ArticleMeta from '@/components/ArticleMeta'
   import ArticleContent from '@/components/ArticleContent'
   import ArticleComment from '@/components/ArticleComment'
+  import store from '@/store'
   import { mapState } from 'vuex'
+
 
   export default {
     name: 'ArticlePage',
@@ -37,12 +39,13 @@
     computed: {
       ...mapState(['article'])
     },
-    beforeMount() {
-      // todo：存在bug，后退时store中的article结构消失
-      this.$store.dispatch('getArticle', this.$route.params.slug)
+    beforeRouteEnter(to, from, next) {
+      store.dispatch('getArticle', to.params.slug).then(() => {
+        next()
+      })
     },
     destroyed() {
-      this.$store.commit('setArticle', {})
+      this.$store.commit('clearArticle')
     }
   }
 </script>

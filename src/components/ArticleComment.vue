@@ -3,46 +3,28 @@
     <div v-if="isAuthenticated" class="col-xs-12 col-md-8 offset-md-2">
       <form class="card comment-form">
         <div class="card-block">
-          <textarea class="form-control" placeholder="Write a comment..." rows="3"></textarea>
+          <textarea v-model="comment" class="form-control" placeholder="Write a comment..." rows="3"></textarea>
         </div>
         <div class="card-footer">
-          <img src="http://i.imgur.com/Qr71crq.jpg" class="comment-author-img" />
-          <button class="btn btn-sm btn-primary">Post Comment</button>
+          <img :src="currentUser.image" class="comment-author-img" />
+          <button @click.prevent="postComment" class="btn btn-sm btn-primary">Post Comment</button>
         </div>
       </form>
 
-      <div class="card">
+      <div v-for="comment in comments" :key="comment.id" class="card">
         <div class="card-block">
           <p class="card-text">
-            With supporting text below as a natural lead-in to additional content.
+            {{comment.body}}
           </p>
         </div>
         <div class="card-footer">
-          <a href="/profile/author" class="comment-author">
-            <img src="http://i.imgur.com/Qr71crq.jpg" class="comment-author-img" />
-          </a>
+          <router-link :to="`/profile/@${comment.author.username}`" class="comment-author">
+            <img :src="comment.author.image" class="comment-author-img" />
+          </router-link>
           &nbsp;
-          <a href="/profile/jacob-schmidt" class="comment-author">Jacob Schmidt</a>
-          <span class="date-posted">Dec 29th</span>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-block">
-          <p class="card-text">
-            With supporting text below as a natural lead-in to additional content.
-          </p>
-        </div>
-        <div class="card-footer">
-          <a href="/profile/author" class="comment-author">
-            <img src="http://i.imgur.com/Qr71crq.jpg" class="comment-author-img" />
-          </a>
-          &nbsp;
-          <a href="/profile/jacob-schmidt" class="comment-author">Jacob Schmidt</a>
-          <span class="date-posted">Dec 29th</span>
-          <span class="mod-options">
-            <i class="ion-trash-a"></i>
-          </span>
+          <router-link :to="`/profile/@${comment.author.username}`" class="comment-author">{{comment.author.username}}</router-link>
+          <span class="date-posted">{{dateStr(comment.createdAt)}}</span>
+          <span v-if="isOwn(comment)" class="mod-options"><i @click="deleteComment(comment.id)" class="ion-trash-a"></i></span>
         </div>
       </div>
     </div>
@@ -59,10 +41,62 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { daySuffix, parseDate, parseMonth } from '@/utils/dateParser'
   export default {
     name: 'ArticleComment',
+    props: {
+      slug: {
+        type: String,
+        required: true
+      }
+    },
+    data() {
+      return {
+        comment: ''
+      }
+    },
     computed: {
-      ...mapState(['isAuthenticated'])
+      ...mapState(['isAuthenticated', 'comments', 'currentUser'])
+    },
+    methods: {
+      dateStr(str) {
+        if (!str)
+          return null
+        if (this.action) {
+          let date = parseDate(str)
+          let day = (date.day[0] === '0') ? date.day[1] : date.day
+          return `${parseMonth(date.month)} ${day}${daySuffix(date.day)}`
+        } else {
+          let date = parseDate(str)
+          let month = parseMonth(date.month)
+          return `${month} ${date.day}, ${date.year}`
+        }
+      },
+      isOwn(comment) {
+        if (comment.author.username === this.currentUser.username)
+          return true
+        else
+          return false
+      },
+      deleteComment(id) {
+        this.$store.dispatch('deleteComment', {
+          slug: this.slug,
+          id: id
+        })
+      },
+      postComment() {
+        this.$store.dispatch('addComment', {
+          slug: this.slug,
+          comment: this.comment
+        })
+        this.comment = ''
+      }
+    },
+    beforeMount() {
+      this.$store.dispatch('getComments', this.slug)
+    },
+    destroyed() {
+      this.$store.commit('clearComments')
     }
   }
 </script>

@@ -63,6 +63,11 @@ export default new Vuex.Store({
       state.globalArticles = [],
       state.articlesCount = 0
     },
+    clearArticle(state) {
+      state.article = {
+        author: {}
+      }
+    },
     clearAuthentication(state) {
       deleteJwtToken()
       state.isAuthenticated = false
@@ -70,11 +75,22 @@ export default new Vuex.Store({
     clearErrorMessages(state) {
       state.errorMessages = {}
     },
+    clearComments(state) {
+      state.comments = []
+    },
     clearPopularTags(state) {
       state.popularTags = []
     },
     resetCurrentPagination(state) {
       state.currentPagination = 1
+    },
+    addComment(state, comment) {
+      state.comments.unshift(comment)
+    },
+    deleteComment(state, num) {
+      state.comments = state.comments.filter((comment) => {
+        return comment.id != num
+      })
     }
   },
   actions: {
@@ -91,8 +107,11 @@ export default new Vuex.Store({
       })
     },
     getArticle(context, slug) {
-      ArticlesService.getArticle(slug).then(({data}) => {
-        context.commit('setArticle', data.article)
+      return new Promise((resolve) => {
+        ArticlesService.getArticle(slug).then(({data}) => {
+          context.commit('setArticle', data.article)
+          resolve()
+        })
       })
     },
     getComments(context, slug) {
@@ -104,6 +123,15 @@ export default new Vuex.Store({
       TagsService.getPopularTags().then(({data}) => {
         context.commit('setPopularTags', data.tags)
       })
+    },
+    getCurrentUser(context) {
+      return new Promise((resolve) => {
+        AuthenticationService.getCurrentUser().then(({data}) => {
+          context.commit('setCurrentUser', data.user)
+          resolve()
+        })
+      }) 
+      
     },
     login(context, credential) {
       return new Promise((resolve) => {
@@ -125,6 +153,18 @@ export default new Vuex.Store({
         }).catch(({response}) => {
           context.commit('setErrorMessages', response.data.errors)
         })
+      })
+    },
+    addComment(context, params) {
+      CommentsService.postComment(params.slug, {
+        body: params.comment
+      }).then(({data}) => {
+        this.commit('addComment', data.comment)
+      })
+    },
+    deleteComment(context, params) {
+      CommentsService.deleteComment(params.slug, params.id).then(() => {
+        this.commit('deleteComment', params.id)
       })
     }
   },
