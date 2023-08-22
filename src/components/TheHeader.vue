@@ -17,7 +17,7 @@
       <!-- 用户通过鉴权的情况 -->
       <ul v-else class="nav navbar-nav pull-xs-right">
         <li class="nav-item">
-          <router-link class="nav-link" active-class="active" to="/">Home</router-link>
+          <router-link class="nav-link" exact-active-class="active" to="/">Home</router-link>
         </li>
         <li class="nav-item">
           <router-link class="nav-link" active-class="active" to="/editor"> <i class="ion-compose"></i>&nbsp;New Article </router-link>
@@ -26,7 +26,7 @@
           <router-link class="nav-link" active-class="active" to="/settings"> <i class="ion-gear-a"></i>&nbsp;Settings </router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" active-class="active" to="/profile/eric-simons">
+          <router-link class="nav-link" active-class="active" :to="`/profile/@${currentUser.username}`">
             <img :src="currentUser.image" class="user-pic" />
             {{currentUser.username}}
           </router-link>

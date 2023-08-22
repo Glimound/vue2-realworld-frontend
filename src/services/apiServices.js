@@ -52,6 +52,12 @@ export const ArticlesService = {
       tag: tag
     })
   },
+  getFeedArticles(offset) {
+    return ApiService.query('/articles/feed', {
+      limit: 10,
+      offset: offset
+    })
+  },
   getArticle(slug) {
     return ApiService.get(`/articles/${slug}`)
   }

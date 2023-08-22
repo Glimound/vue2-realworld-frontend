@@ -6,6 +6,7 @@ import RegisterPage from '@/views/RegisterPage'
 import EditorPage from '@/views/EditorPage'
 import SettingsPage from '@/views/SettingsPage'
 import ArticlePage from '@/views/ArticlePage'
+import ProfilePage from '@/views/ProfilePage'
 import store from '@/store'
 
 Vue.use(VueRouter)
@@ -40,6 +41,11 @@ const routes = [
     name: 'articlePage',
     path: '/article/:slug',
     component: ArticlePage
+  },
+  {
+    name: 'profilePage',
+    path: '/profile/@:username',
+    component: ProfilePage
   }
 ]
 

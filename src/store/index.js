@@ -8,6 +8,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     isAuthenticated: !!getJwtToken(),
+    isLoading: false,
     globalArticles: [],
     articlesCount: 0,
     // 此处article是异步fetch的，若未取到时内部无结构，直接访问其中某个属性会导致错误
@@ -56,6 +57,9 @@ export default new Vuex.Store({
       saveJwtToken(str)
       state.isAuthenticated = true
     },
+    setLoading(state, boolean) {
+      state.isLoading = boolean
+    },
     clearCurrentTag(state) {
       state.currentTag = ''
     },
@@ -95,15 +99,27 @@ export default new Vuex.Store({
   },
   actions: {
     getGlobalArticles(context, offset) {
+      context.commit('setLoading', true)
       ArticlesService.getArticles(offset).then(({data}) => {
         context.commit('setGlobalArticles', data.articles)
         context.commit('setArticlesCount', data.articlesCount)
+        context.commit('setLoading', false)
       })
     },
     getGlobalArticlesByTag(context, params) {
+      context.commit('setLoading', true)
       ArticlesService.getTaggedArticles(params.offset, params.tag).then(({data}) => {
         context.commit('setGlobalArticles', data.articles)
         context.commit('setArticlesCount', data.articlesCount)
+        context.commit('setLoading', false)
+      })
+    },
+    getGlobalArticlesByYourFeed(context, offset) {
+      context.commit('setLoading', true)
+      ArticlesService.getFeedArticles(offset).then(({data}) => {
+        context.commit('setGlobalArticles', data.articles)
+        context.commit('setArticlesCount', data.articlesCount)
+        context.commit('setLoading', false)
       })
     },
     getArticle(context, slug) {

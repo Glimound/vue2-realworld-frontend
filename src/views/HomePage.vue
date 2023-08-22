@@ -11,7 +11,7 @@
       <div class="row">
         <div class="col-md-9">
 
-          <feed-toggle/>
+          <feed-toggle type="homePage"/>
 
           <article-preview :globalArticles="globalArticles"/>
 
@@ -44,14 +44,17 @@
       TagList
     },
     computed:{
-      ...mapState(['globalArticles']),
+      ...mapState(['globalArticles', 'isAuthenticated']),
       paginationNum() {
         //todo: 将此处的10解耦
         return Math.ceil((this.$store.state.articlesCount -1) / 10)
       }
     },
     beforeMount() {
-      this.$store.dispatch('getGlobalArticles', 0)
+      if (this.isAuthenticated)
+        this.$store.dispatch('getGlobalArticlesByYourFeed', 0)
+      else
+        this.$store.dispatch('getGlobalArticles', 0)
     },
     destroyed() {
       this.$store.commit('clearCurrentTag')
