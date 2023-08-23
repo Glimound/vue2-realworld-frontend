@@ -58,6 +58,20 @@ export const ArticlesService = {
       offset: offset
     })
   },
+  getUserArticles(offset, username) {
+    return ApiService.query('/articles', {
+      limit: 10,
+      offset: offset,
+      author: username
+    })
+  },
+  getFavoritedArticles(offset, username) {
+    return ApiService.query('/articles', {
+      limit: 10,
+      offset: offset,
+      favorited: username
+    })
+  },
   getArticle(slug) {
     return ApiService.get(`/articles/${slug}`)
   }
@@ -101,5 +115,17 @@ export const AuthenticationService = {
     return ApiService.put('/user', {
       user: info
     })
+  }
+}
+
+export const ProfileService = {
+  getProfile(username) {
+    return ApiService.get(`/profiles/${username}`)
+  },
+  followUser(username) {
+    return ApiService.post(`/profiles/${username}/follow`)
+  },
+  deleteUser(username) {
+    return ApiService.delete(`/profiles/${username}/follow`)
   }
 }

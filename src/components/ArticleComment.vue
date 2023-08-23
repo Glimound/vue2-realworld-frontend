@@ -62,14 +62,10 @@
       dateStr(str) {
         if (!str)
           return null
-        if (this.action) {
+        else {
           let date = parseDate(str)
           let day = (date.day[0] === '0') ? date.day[1] : date.day
           return `${parseMonth(date.month)} ${day}${daySuffix(date.day)}`
-        } else {
-          let date = parseDate(str)
-          let month = parseMonth(date.month)
-          return `${month} ${date.day}, ${date.year}`
         }
       },
       isOwn(comment) {

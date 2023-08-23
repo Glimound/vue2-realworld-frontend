@@ -22,18 +22,27 @@
       }
     },
     computed: {
-      ...mapState(['currentTag', 'currentPagination'])
+      ...mapState(['currentTag', 'currentPagination', 'profile', 'toggleChecked'])
     },
     methods: {
       changePageTo(num) {
-        if (!this.currentTag)
-          this.$store.dispatch('getGlobalArticles', (num - 1) * 10)
-        else
+        if (this.currentTag)
           this.$store.dispatch('getGlobalArticlesByTag', {
             offset: (num - 1) * 10,
             tag: this.currentTag
           })
-        // todo: tag间切换时vuex的数据未清空
+        else if (!!this.profile && this.toggleChecked === 'myArticles')
+          this.$store.dispatch('getGlobalArticlesByUsername', {
+            offset: (num - 1) * 10,
+            username: this.profile.username
+          })
+        else if (!!this.profile && this.toggleChecked === 'favoritedArticles')
+          this.$store.dispatch('getGlobalArticlesByFavorited', {
+            offset: (num - 1) * 10,
+            username: this.profile.username
+          })
+        else
+          this.$store.dispatch('getGlobalArticles', (num - 1) * 10)
         this.$store.commit('setCurrentPagination', num)
       },
       pageItemClass(n) {

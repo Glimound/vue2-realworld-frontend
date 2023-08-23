@@ -11,7 +11,7 @@
       <div class="row">
         <div class="col-md-9">
 
-          <feed-toggle type="homePage"/>
+          <toggle-bar type="homePage"/>
 
           <article-preview :globalArticles="globalArticles"/>
 
@@ -31,7 +31,7 @@
 <script>
   import ArticlePreview from '@/components/ArticlePreview'
   import ThePagination from '@/components/ThePagination'
-  import FeedToggle from '@/components/FeedToggle'
+  import ToggleBar from '@/components/ToggleBar'
   import TagList from '@/components/TagList'
   import { mapState } from 'vuex'
 
@@ -40,14 +40,14 @@
     components: {
       ArticlePreview,
       ThePagination,
-      FeedToggle,
+      ToggleBar,
       TagList
     },
     computed:{
       ...mapState(['globalArticles', 'isAuthenticated']),
       paginationNum() {
         //todo: 将此处的10解耦
-        return Math.ceil((this.$store.state.articlesCount -1) / 10)
+        return Math.ceil((this.$store.state.articlesCount - 1) / 10)
       }
     },
     beforeMount() {

@@ -51,6 +51,7 @@
     methods: {
       logout() {
         this.$store.commit('clearAuthentication')
+        this.$store.commit('clearCurrentUser')
         this.$router.push({ name: 'homePage' })
       }
     }

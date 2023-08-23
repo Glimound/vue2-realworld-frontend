@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { deleteJwtToken, getJwtToken, saveJwtToken } from '@/services/jwtServices'
-import { ArticlesService, AuthenticationService, CommentsService, TagsService } from '@/services/apiServices'
+import { ArticlesService, AuthenticationService, CommentsService, TagsService, ProfileService } from '@/services/apiServices'
 
 Vue.use(Vuex)
 
@@ -11,17 +11,15 @@ export default new Vuex.Store({
     isLoading: false,
     globalArticles: [],
     articlesCount: 0,
-    // 此处article是异步fetch的，若未取到时内部无结构，直接访问其中某个属性会导致错误
-    // article: {}
-    article: {
-      author: {}
-    },
+    article: {},
     comments: [],
     popularTags: [],
     currentTag: '',
     currentPagination: 1,
     errorMessages: {},
-    currentUser: {}
+    currentUser: {},
+    profile: {},
+    toggleChecked: ''
   },
   getters: {
   },
@@ -60,6 +58,15 @@ export default new Vuex.Store({
     setLoading(state, boolean) {
       state.isLoading = boolean
     },
+    setProfile(state, obj) {
+      state.profile = obj
+    },
+    setProfileFollowing(state, boolean) {
+      state.profile.following = boolean
+    },
+    setToggleChecked(state, str) {
+      state.toggleChecked = str
+    },
     clearCurrentTag(state) {
       state.currentTag = ''
     },
@@ -76,6 +83,9 @@ export default new Vuex.Store({
       deleteJwtToken()
       state.isAuthenticated = false
     },
+    clearCurrentUser(state) {
+      state.currentUser = {}
+    },
     clearErrorMessages(state) {
       state.errorMessages = {}
     },
@@ -84,6 +94,12 @@ export default new Vuex.Store({
     },
     clearPopularTags(state) {
       state.popularTags = []
+    },
+    clearProfile(state) {
+      state.profile = {}
+    },
+    clearToggleChecked(state) {
+      state.toggleChecked = ''
     },
     resetCurrentPagination(state) {
       state.currentPagination = 1
@@ -122,6 +138,22 @@ export default new Vuex.Store({
         context.commit('setLoading', false)
       })
     },
+    getGlobalArticlesByUsername(context, params) {
+      context.commit('setLoading', true)
+      ArticlesService.getUserArticles(params.offset, params.username).then(({data}) => {
+        context.commit('setGlobalArticles', data.articles)
+        context.commit('setArticlesCount', data.articlesCount)
+        context.commit('setLoading', false)
+      })
+    },
+    getGlobalArticlesByFavorited(context, params) {
+      context.commit('setLoading', true)
+      ArticlesService.getFavoritedArticles(params.offset, params.username).then(({data}) => {
+        context.commit('setGlobalArticles', data.articles)
+        context.commit('setArticlesCount', data.articlesCount)
+        context.commit('setLoading', false)
+      })
+    },
     getArticle(context, slug) {
       return new Promise((resolve) => {
         ArticlesService.getArticle(slug).then(({data}) => {
@@ -146,8 +178,15 @@ export default new Vuex.Store({
           context.commit('setCurrentUser', data.user)
           resolve()
         })
-      }) 
-      
+      })
+    },
+    getProfile(context, username) {
+      return new Promise((resolve) => {
+        ProfileService.getProfile(username).then(({data}) => {
+          context.commit('setProfile', data.profile)
+          resolve()
+        })
+      })
     },
     login(context, credential) {
       return new Promise((resolve) => {
@@ -175,12 +214,22 @@ export default new Vuex.Store({
       CommentsService.postComment(params.slug, {
         body: params.comment
       }).then(({data}) => {
-        this.commit('addComment', data.comment)
+        context.commit('addComment', data.comment)
       })
     },
     deleteComment(context, params) {
       CommentsService.deleteComment(params.slug, params.id).then(() => {
-        this.commit('deleteComment', params.id)
+        context.commit('deleteComment', params.id)
+      })
+    },
+    follow(context, username) {
+      ProfileService.followUser(username).then(() => {
+        context.commit('setProfileFollowing', true)
+      })
+    },
+    unfollow(context, username) {
+      ProfileService.followUser(username).then(() => {
+        context.commit('setProfileFollowing', false)
       })
     }
   },
