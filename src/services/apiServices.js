@@ -129,3 +129,12 @@ export const ProfileService = {
     return ApiService.delete(`/profiles/${username}/follow`)
   }
 }
+
+export const FavoritesService = {
+  favorite(slug) {
+    return ApiService.post(`/articles/${slug}/favorite`)
+  },
+  unfavorite(slug) {
+    return ApiService.delete(`/articles/${slug}/favorite`)
+  }
+}

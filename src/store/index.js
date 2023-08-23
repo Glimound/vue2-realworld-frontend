@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { deleteJwtToken, getJwtToken, saveJwtToken } from '@/services/jwtServices'
-import { ArticlesService, AuthenticationService, CommentsService, TagsService, ProfileService } from '@/services/apiServices'
+import { ArticlesService, AuthenticationService, CommentsService, TagsService, ProfileService, FavoritesService } from '@/services/apiServices'
 
 Vue.use(Vuex)
 
@@ -111,6 +111,12 @@ export default new Vuex.Store({
       state.comments = state.comments.filter((comment) => {
         return comment.id != num
       })
+    },
+    changeFavorite(state, params) {
+      state.globalArticles[params.index].favorited = params.boolean
+    },
+    changeFavoritesCount(state, params) {
+      state.globalArticles[params.index].favoritesCount = params.num
     }
   },
   actions: {
@@ -231,6 +237,30 @@ export default new Vuex.Store({
       ProfileService.followUser(username).then(() => {
         context.commit('setProfileFollowing', false)
       })
+    },
+    changeFavorite(context, params) {
+      if (params.changeTo)
+      FavoritesService.favorite(params.slug).then(({data}) => {
+        context.commit('changeFavorite', {
+          index: params.index,
+          boolean: params.changeTo
+        })
+        context.commit('changeFavoritesCount', {
+          index: params.index,
+          num: data.article.favoritesCount
+        })
+      })
+      else
+        FavoritesService.unfavorite(params.slug).then(({data}) => {
+          context.commit('changeFavorite', {
+            index: params.index,
+            boolean: params.changeTo
+          })
+          context.commit('changeFavoritesCount', {
+            index: params.index,
+            num: data.article.favoritesCount
+          })
+        })
     }
   },
   modules: {

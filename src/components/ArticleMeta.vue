@@ -6,7 +6,7 @@
       <span class="date">{{dateStr(article.createdAt)}}</span>
     </div>
     <ArticleOprations v-if="action" :article="article"/>
-    <button v-else :class="btnClass">
+    <button v-else @click="changeFavorite" :class="btnClass">
       <i class="ion-heart"></i> {{article.favoritesCount}}
     </button>
   </div>
@@ -15,6 +15,7 @@
 <script>
   import ArticleOprations from '@/components/ArticleOperations'
   import { daySuffix, parseDate, parseMonth } from '@/utils/dateParser'
+  import { mapState } from 'vuex'
   export default {
     name: 'ArticleMeta',
     components: {
@@ -29,9 +30,14 @@
         type: Boolean,
         required: false,
         default: false
+      },
+      index: {
+        type: Number,
+        required: true
       }
     },
     computed: {
+      ...mapState(['isAuthenticated']),
       btnClass() {
         return {
           btn: true,
@@ -43,6 +49,22 @@
       }
     },
     methods: {
+      changeFavorite() {
+        if (!this.isAuthenticated)
+          this.$router.push({name: 'loginPage'})
+        else if (this.article.favorited)
+          this.$store.dispatch('changeFavorite', {
+            index: this.index,
+            slug: this.article.slug,
+            changeTo: false
+          })
+        else
+          this.$store.dispatch('changeFavorite', {
+            index: this.index,
+            slug: this.article.slug,
+            changeTo: true
+          })
+      },
       dateStr(str) {
         if (!str)
           return null

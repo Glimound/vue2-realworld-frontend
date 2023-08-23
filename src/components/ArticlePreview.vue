@@ -2,7 +2,7 @@
   <div>
     <div>
       <div v-for="(article, index) in globalArticles" :key="index" class="article-preview">
-        <article-meta :article="article"/>
+        <article-meta :article="article" :index="index"/>
         <router-link :to="`/article/${article.slug}`" class="preview-link">
           <h1>{{article.title}}</h1>
           <p>{{article.description}}</p>

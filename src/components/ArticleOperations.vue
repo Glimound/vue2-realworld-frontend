@@ -9,6 +9,7 @@
       </button>
     </span>
     <span v-else>
+      <!-- todo: 实现follow和favorite功能 -->
       <button class="btn btn-sm btn-outline-secondary">
         <i class="ion-plus-round"></i>
         &nbsp; Follow {{article.author.username}}
