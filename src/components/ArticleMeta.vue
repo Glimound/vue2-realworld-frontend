@@ -33,7 +33,7 @@
       },
       index: {
         type: Number,
-        required: true
+        required: false
       }
     },
     computed: {
@@ -75,7 +75,8 @@
         } else {
           let date = parseDate(str)
           let month = parseMonth(date.month)
-          return `${month} ${date.day}, ${date.year}`
+          let day = (date.day[0] === '0') ? date.day[1] : date.day
+          return `${month} ${day}, ${date.year}`
         }
       }
     }

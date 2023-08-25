@@ -44,6 +44,11 @@
         next()
       })
     },
+    beforeRouteUpdate(to, from, next) {
+      store.dispatch('getArticle', to.params.slug).then(() => {
+        next()
+      })
+    },
     destroyed() {
       this.$store.commit('clearArticle')
     }

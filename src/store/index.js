@@ -64,6 +64,9 @@ export default new Vuex.Store({
     setProfileFollowing(state, boolean) {
       state.profile.following = boolean
     },
+    setArticleFollowing(state, boolean) {
+      state.article.author.following = boolean
+    },
     setToggleChecked(state, str) {
       state.toggleChecked = str
     },
@@ -113,10 +116,20 @@ export default new Vuex.Store({
       })
     },
     changeFavorite(state, params) {
-      state.globalArticles[params.index].favorited = params.boolean
+      //state.article不为空（在article页面）
+      if (Object.keys(state.article).length !== 0)
+        state.article.favorited = params.boolean
+      //在homePage/profilePage页面
+      else
+        state.globalArticles[params.index].favorited = params.boolean
     },
     changeFavoritesCount(state, params) {
-      state.globalArticles[params.index].favoritesCount = params.num
+      //state.article不为空（在article页面）
+      if (Object.keys(state.article).length !== 0)
+        state.article.favoritesCount = params.num
+      //在homePage/profilePage页面
+      else
+        state.globalArticles[params.index].favoritesCount = params.num
     }
   },
   actions: {
@@ -230,26 +243,36 @@ export default new Vuex.Store({
     },
     follow(context, username) {
       ProfileService.followUser(username).then(() => {
-        context.commit('setProfileFollowing', true)
+        //context.state.article不为空（在article页面）
+        if (Object.keys(context.state.article).length !== 0)
+          context.commit('setArticleFollowing', true)
+        //在profile页面
+        else
+          context.commit('setProfileFollowing', true)
       })
     },
     unfollow(context, username) {
-      ProfileService.followUser(username).then(() => {
-        context.commit('setProfileFollowing', false)
+      ProfileService.unfollowUser(username).then(() => {
+        //context.state.article不为空（在article页面）
+        if (Object.keys(context.state.article).length !== 0)
+          context.commit('setArticleFollowing', false)
+        //在profile页面
+        else
+          context.commit('setProfileFollowing', false)
       })
     },
     changeFavorite(context, params) {
       if (params.changeTo)
-      FavoritesService.favorite(params.slug).then(({data}) => {
-        context.commit('changeFavorite', {
-          index: params.index,
-          boolean: params.changeTo
+        FavoritesService.favorite(params.slug).then(({data}) => {
+          context.commit('changeFavorite', {
+            index: params.index,
+            boolean: params.changeTo
+          })
+          context.commit('changeFavoritesCount', {
+            index: params.index,
+            num: data.article.favoritesCount
+          })
         })
-        context.commit('changeFavoritesCount', {
-          index: params.index,
-          num: data.article.favoritesCount
-        })
-      })
       else
         FavoritesService.unfavorite(params.slug).then(({data}) => {
           context.commit('changeFavorite', {

@@ -74,6 +74,9 @@ export const ArticlesService = {
   },
   getArticle(slug) {
     return ApiService.get(`/articles/${slug}`)
+  },
+  deleteArticle(slug) {
+    return ApiService.delete(`/articles/${slug}`)
   }
 }
 
@@ -125,7 +128,7 @@ export const ProfileService = {
   followUser(username) {
     return ApiService.post(`/profiles/${username}/follow`)
   },
-  deleteUser(username) {
+  unfollowUser(username) {
     return ApiService.delete(`/profiles/${username}/follow`)
   }
 }
