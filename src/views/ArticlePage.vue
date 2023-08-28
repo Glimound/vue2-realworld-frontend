@@ -28,7 +28,6 @@
   import store from '@/store'
   import { mapState } from 'vuex'
 
-
   export default {
     name: 'ArticlePage',
     components: {

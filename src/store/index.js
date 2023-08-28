@@ -300,6 +300,15 @@ export default new Vuex.Store({
           context.commit('setErrorMessages', response.data.errors)
         })
       })
+    },
+    updateCurrentUser(context, info) {
+      return new Promise((resolve) => {
+        AuthenticationService.updateCurrentUser(info).then(({data}) => {
+          resolve(data)
+        }).catch(({response}) => {
+          context.commit('setErrorMessages', response.data.errors)
+        })
+      })
     }
   },
   modules: {
