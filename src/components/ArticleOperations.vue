@@ -57,7 +57,7 @@
     },
     methods: {
       editArticle() {
-        this.$router.push({name: 'editorPage', params: this.article}) //todo: 传参
+        this.$router.push(`/editor/${this.article.slug}`)
       },
       deleteArticle() {
         ArticlesService.deleteArticle(this.article.slug).then(() => {

@@ -78,9 +78,7 @@ export default new Vuex.Store({
       state.articlesCount = 0
     },
     clearArticle(state) {
-      state.article = {
-        author: {}
-      }
+      state.article = {}
     },
     clearAuthentication(state) {
       deleteJwtToken()
@@ -284,6 +282,24 @@ export default new Vuex.Store({
             num: data.article.favoritesCount
           })
         })
+    },
+    createArticle(context, post) {
+      return new Promise((resolve) => {
+        ArticlesService.createArticle(post).then(({data}) => {
+          resolve(data)
+        }).catch(({response}) => {
+          context.commit('setErrorMessages', response.data.errors)
+        })
+      })
+    },
+    updateArticle(context, params) {
+      return new Promise((resolve) => {
+        ArticlesService.updateArticle(params.slug, params.post).then(({data}) => {
+          resolve(data)
+        }).catch(({response}) => {
+          context.commit('setErrorMessages', response.data.errors)
+        })
+      })
     }
   },
   modules: {

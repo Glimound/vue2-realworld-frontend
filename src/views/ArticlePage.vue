@@ -49,8 +49,9 @@
         next()
       })
     },
-    destroyed() {
-      this.$store.commit('clearArticle')
+    beforeRouteLeave(to, from, next) {
+      store.commit('clearArticle')
+      next()
     }
   }
 </script>

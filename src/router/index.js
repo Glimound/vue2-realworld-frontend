@@ -29,7 +29,7 @@ const routes = [
   },
   {
     name: 'editorPage',
-    path: '/editor',
+    path: '/editor/:slug?',
     component: EditorPage
   },
   {

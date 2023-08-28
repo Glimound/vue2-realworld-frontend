@@ -77,6 +77,12 @@ export const ArticlesService = {
   },
   deleteArticle(slug) {
     return ApiService.delete(`/articles/${slug}`)
+  },
+  createArticle( data) {
+    return ApiService.post('/articles', data)
+  },
+  updateArticle(slug, data) {
+    return ApiService.put(`/articles/${slug}`, data)
   }
 }
 
