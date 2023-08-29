@@ -89,18 +89,21 @@
     },
     beforeRouteEnter(to, from, next) {
       store.dispatch('getProfile', to.params.username).then(() => {
+        store.dispatch('getGlobalArticlesByUsername', {
+          offset: 0,
+          username: store.state.profile.username
+        })
         next()
       })
+      
     },
     beforeRouteUpdate(to, from, next) {
       store.dispatch('getProfile', to.params.username).then(() => {
+        store.dispatch('getGlobalArticlesByUsername', {
+          offset: 0,
+          username: store.state.profile.username
+        })
         next()
-      })
-    },
-    beforeMount() {
-      this.$store.dispatch('getGlobalArticlesByUsername', {
-        offset: 0,
-        username: this.profile.username
       })
     },
     destroyed() {
